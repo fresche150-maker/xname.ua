@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -571,11 +572,11 @@
 
     <div class="container" id="catalogContainer">
         <div class="categories" id="categories">
-            <button class="cat-btn" data-cat="men">Он</button>
-            <button class="cat-btn" data-cat="women">Она</button>
-            <button class="cat-btn" data-cat="new">New</button>
-            <button class="cat-btn" data-cat="sale">Sale</button>
-            <button class="cat-btn active" data-cat="all">Все</button>
+            <button class="cat-btn" data-cat="men">Він</button>
+            <button class="cat-btn" data-cat="women">Вона</button>
+            <button class="cat-btn" data-cat="new">Новинки</button>
+            <button class="cat-btn" data-cat="sale">Розпродаж</button>
+            <button class="cat-btn active" data-cat="all">Усі</button>
         </div>
         <div class="subcategories-wrap" id="subcategoriesWrap">
             <div class="subcategories" id="subcategories"></div>
@@ -975,7 +976,8 @@
                 { title: 'Опис', content: `<p>${product.description}</p>` },
                 { title: 'Склад та якість', content: `<p>${product.composition}</p>` },
                 { title: 'Розмірна сітка', content: buildSizeTable(product.sizeChart) },
-                { title: 'Догляд', content: `<p>${product.care}</p>` }
+                { title: 'Доставка', content: '<p>Доставка здійснюється по Україні. Терміни та вартість залежать від обраного способу доставки.</p>' },
+                { title: 'Повернення', content: '<p>Повернення або обмін можливі відповідно до законодавства України за умови збереження товарного вигляду та комплектності.</p>' }
             ];
 
             document.getElementById('pdpAccordion').innerHTML = sections.map((s, i) => `
