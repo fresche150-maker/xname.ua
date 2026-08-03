@@ -1,0 +1,26 @@
+{
+  "title": "Гольфы",
+  "sku": "12",
+  "price": 1000000,
+  "gender": "women",
+  "subtype": "leggings",
+  "isNew": false,
+  "isSale": true,
+  "images": [
+    "/images/products/IMG_2394.JPG"
+  ],
+  "sizes": [
+    "XS",
+    "XXL"
+  ],
+  "description": "Гольфы",
+  "composition": "Лучший",
+  "care": "Ретельный",
+  "sizeChart": [
+    {
+      "size": "150",
+      "chest": "150",
+      "length": "150"
+    }
+  ]
+}
