@@ -1,0 +1,75 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/products"
+public_folder: "/images/products"
+
+locale: "uk"
+
+collections:
+  - name: "products"
+    label: "Товари"
+    label_singular: "Товар"
+    folder: "content/products"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    fields:
+      - { label: "Назва", name: "title", widget: "string", required: true }
+      - { label: "Артикул (SKU)", name: "sku", widget: "string", required: true }
+      - { label: "Ціна (грн)", name: "price", widget: "number", value_type: "int", required: true }
+      
+      - label: "Стать"
+        name: "gender"
+        widget: "select"
+        options:
+          - { label: "Чоловіче (Він)", value: "men" }
+          - { label: "Жіноче (Вона)", value: "women" }
+        required: true
+
+      - label: "Підкатегорія"
+        name: "subtype"
+        widget: "select"
+        options:
+          - { label: "Худі", value: "hoodie" }
+          - { label: "Штани", value: "pants" }
+          - { label: "Костюми", value: "suit" }
+          - { label: "Футболки", value: "tshirt" }
+          - { label: "Світшоти", value: "sweatshirt" }
+          - { label: "Джогери", value: "joggers" }
+          - { label: "Шорти", value: "shorts" }
+          - { label: "Плаття", value: "dress" }
+          - { label: "Майки", value: "tank" }
+          - { label: "Легінси", value: "leggings" }
+          - { label: "Лонгслів", value: "longsleeve" }
+        required: true
+
+      - { label: "Новинка", name: "isNew", widget: "boolean", default: false }
+      - { label: "Розпродаж", name: "isSale", widget: "boolean", default: false }
+
+      - label: "Фотографії"
+        name: "images"
+        widget: "list"
+        min: 1
+        field: { label: "Фото", name: "image", widget: "image" }
+
+      - label: "Розміри"
+        name: "sizes"
+        widget: "select"
+        multiple: true
+        options: ["XS", "S", "M", "L", "XL", "XXL"]
+        required: true
+
+      - { label: "Опис", name: "description", widget: "text" }
+      - { label: "Склад та якість", name: "composition", widget: "text" }
+      - { label: "Догляд", name: "care", widget: "text" }
+
+      - label: "Розмірна сітка"
+        name: "sizeChart"
+        widget: "list"
+        fields:
+          - { label: "Розмір", name: "size", widget: "string" }
+          - { label: "Обхват грудей (см)", name: "chest", widget: "string" }
+          - { label: "Довжина виробу (см)", name: "length", widget: "string" }
