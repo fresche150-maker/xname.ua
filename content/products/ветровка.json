@@ -1,0 +1,17 @@
+{
+  "title": "ветровка",
+  "sku": "",
+  "price": 10000000,
+  "gender": "women",
+  "subtype": "tank",
+  "isNew": false,
+  "isSale": false,
+  "images": [
+    "/images/products/IMG_1833.JPG"
+  ],
+  "sizes": [],
+  "description": "",
+  "composition": "",
+  "care": "",
+  "sizeChart": []
+}
