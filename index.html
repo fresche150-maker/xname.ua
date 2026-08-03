@@ -1109,8 +1109,49 @@
             updateCartUI();
             closeCartModal();
         }
+        let products = [];
 
-        renderProducts();
+        async function loadProducts() {
+            try {
+                const productFiles = [
+                    'content/products/тест.json'
+                ];
+
+                const loaded = await Promise.all(
+                    productFiles.map(async (file) => {
+                        const res = await fetch('/' + file);
+                        if (!res.ok) throw new Error('Не удалось загрузить ' + file);
+                        const data = await res.json();
+
+                        return {
+                            ...data,
+                            id: data.sku || data.title || Math.random().toString(36).slice(2),
+                            images: (data.images || []).map(img => {
+                                if (typeof img === 'string') {
+                                    return img.startsWith('/') || img.startsWith('http') ? img : '/' + img;
+                                }
+                                if (img && img.image) {
+                                    return img.image.startsWith('/') || img.image.startsWith('http') ? img.image : '/' + img.image;
+                                }
+                                return img;
+                            })
+                        };
+                    })
+                );
+
+                products = loaded;
+                console.log('Товары загружены:', products);
+                renderProducts();
+            } catch (err) {
+                console.error('Ошибка загрузки товаров:', err);
+                products = [];
+                renderProducts();
+            }
+        }
+
+        // Запускаем загрузку
+        loadProducts();
+        
     </script>
 </body>
 </html>
