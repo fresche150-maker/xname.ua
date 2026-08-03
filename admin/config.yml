@@ -18,17 +18,17 @@ collections:
     extension: "json"
     format: "json"
     fields:
-      - { label: "Назва", name: "title", widget: "string", required: true }
-      - { label: "Артикул (SKU)", name: "sku", widget: "string", required: true }
-      - { label: "Ціна (грн)", name: "price", widget: "number", value_type: "int", required: true }
-      
+      - { label: "Назва", name: "title", widget: "string", required: false }
+      - { label: "Артикул (SKU)", name: "sku", widget: "string", required: false }
+      - { label: "Ціна (грн)", name: "price", widget: "number", value_type: "int", required: false }
+
       - label: "Стать"
         name: "gender"
         widget: "select"
         options:
           - { label: "Чоловіче (Він)", value: "men" }
           - { label: "Жіноче (Вона)", value: "women" }
-        required: true
+        required: false
 
       - label: "Підкатегорія"
         name: "subtype"
@@ -45,32 +45,33 @@ collections:
           - { label: "Майки", value: "tank" }
           - { label: "Легінси", value: "leggings" }
           - { label: "Лонгслів", value: "longsleeve" }
-        required: true
+        required: false
 
-      - { label: "Новинка", name: "isNew", widget: "boolean", default: false }
-      - { label: "Розпродаж", name: "isSale", widget: "boolean", default: false }
+      - { label: "Новинка", name: "isNew", widget: "boolean", default: false, required: false }
+      - { label: "Розпродаж", name: "isSale", widget: "boolean", default: false, required: false }
 
       - label: "Фотографії"
         name: "images"
         widget: "list"
-        min: 1
-        field: { label: "Фото", name: "image", widget: "image" }
+        required: false
+        field: { label: "Фото", name: "image", widget: "image", required: false }
 
       - label: "Розміри"
         name: "sizes"
         widget: "select"
         multiple: true
         options: ["XS", "S", "M", "L", "XL", "XXL"]
-        required: true
+        required: false
 
-      - { label: "Опис", name: "description", widget: "text" }
-      - { label: "Склад та якість", name: "composition", widget: "text" }
-      - { label: "Догляд", name: "care", widget: "text" }
+      - { label: "Опис", name: "description", widget: "text", required: false }
+      - { label: "Склад та якість", name: "composition", widget: "text", required: false }
+      - { label: "Догляд", name: "care", widget: "text", required: false }
 
       - label: "Розмірна сітка"
         name: "sizeChart"
         widget: "list"
+        required: false
         fields:
-          - { label: "Розмір", name: "size", widget: "string" }
-          - { label: "Обхват грудей (см)", name: "chest", widget: "string" }
-          - { label: "Довжина виробу (см)", name: "length", widget: "string" }
+          - { label: "Розмір", name: "size", widget: "string", required: false }
+          - { label: "Обхват грудей (см)", name: "chest", widget: "string", required: false }
+          - { label: "Довжина виробу (см)", name: "length", widget: "string", required: false }
