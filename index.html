@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -1021,30 +1020,39 @@
         }
         let products = [];
 
+        // Приводим путь картинки к виду, корректному для GitHub Pages
+        // (сайт лежит в подпапке /xname.ua/, поэтому убираем ведущий "/")
+        function normalizeImagePath(img) {
+            if (!img) return img;
+            const src = typeof img === 'string' ? img : img.image;
+            if (!src) return src;
+            if (src.startsWith('http')) return src;
+            return src.replace(/^\/+/, '');
+        }
+
         async function loadProducts() {
             try {
-                const productFiles = [
-                    'content/products/тест.json'
-                ];
+                // Динамически получаем список всех файлов в content/products
+                // через GitHub API — так любой новый товар, добавленный
+                // через CMS, подхватится автоматически, без правок кода.
+                const listRes = await fetch(
+                    'https://api.github.com/repos/fresche150-maker/xname.ua/contents/content/products'
+                );
+                if (!listRes.ok) throw new Error('Не удалось получить список товаров');
+                const files = await listRes.json();
+
+                const jsonFiles = files.filter(f => f.name.toLowerCase().endsWith('.json'));
 
                 const loaded = await Promise.all(
-                    productFiles.map(async (file) => {
-                        const res = await fetch('/' + file);
-                        if (!res.ok) throw new Error('Не удалось загрузить ' + file);
+                    jsonFiles.map(async (file) => {
+                        const res = await fetch(file.download_url);
+                        if (!res.ok) throw new Error('Не удалось загрузить ' + file.name);
                         const data = await res.json();
 
                         return {
                             ...data,
                             id: data.sku || data.title || Math.random().toString(36).slice(2),
-                            images: (data.images || []).map(img => {
-                                if (typeof img === 'string') {
-                                    return img.startsWith('/') || img.startsWith('http') ? img : '/' + img;
-                                }
-                                if (img && img.image) {
-                                    return img.image.startsWith('/') || img.image.startsWith('http') ? img.image : '/' + img.image;
-                                }
-                                return img;
-                            })
+                            images: (data.images || []).map(normalizeImagePath)
                         };
                     })
                 );
