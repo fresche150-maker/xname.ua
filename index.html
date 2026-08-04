@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -137,6 +138,41 @@
             color: var(--bg);
             background: var(--ink);
             border-color: var(--ink);
+        }
+
+        /* ---------- Sort ---------- */
+        .sort-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .sort-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sort-select {
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 7px 10px;
+            cursor: pointer;
+        }
+
+        .sort-select:focus { outline: none; border-color: var(--ink); }
+        .sort-select option { background: var(--surface); color: var(--ink); }
+
+        @media (max-width: 560px) {
+            .sort-row { justify-content: space-between; margin-bottom: 16px; }
         }
 
         /* ---------- Product grid ---------- */
@@ -582,6 +618,15 @@
             <div class="subcategories" id="subcategories"></div>
         </div>
 
+        <div class="sort-row">
+            <label class="sort-label" for="sortSelect">Сортування</label>
+            <select id="sortSelect" class="sort-select" onchange="handleSortChange(this.value)">
+                <option value="new">Спочатку нові</option>
+                <option value="priceAsc">Ціна: від дешевих</option>
+                <option value="priceDesc">Ціна: від дорогих</option>
+            </select>
+        </div>
+
         <div class="products-grid" id="productsGrid"></div>
     </div>
 
@@ -667,6 +712,7 @@
         let galleryTouchStartX = null;
         let activeMain = 'all';
         let activeSub = null;
+        let sortMode = 'new'; // 'new' | 'priceAsc' | 'priceDesc'
 
         const SUBTYPE_LABELS = {
             hoodie: 'Худі',
@@ -710,7 +756,33 @@
                 }
             }
 
-            return list;
+            return sortProducts(list);
+        }
+
+        // Час "додавання" товару. Береться з поля createdAt (проставляється
+        // автоматично в CMS при створенні товару). Якщо його немає (старі
+        // товари, додані до цього оновлення) — вважаємо товар "найстарішим",
+        // щоб він не перекривав по-справжньому нові позиції.
+        function getCreatedTime(product) {
+            const t = product.createdAt ? Date.parse(product.createdAt) : NaN;
+            return isNaN(t) ? 0 : t;
+        }
+
+        function sortProducts(list) {
+            const sorted = [...list];
+            if (sortMode === 'priceAsc') {
+                sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+            } else if (sortMode === 'priceDesc') {
+                sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+            } else {
+                sorted.sort((a, b) => getCreatedTime(b) - getCreatedTime(a));
+            }
+            return sorted;
+        }
+
+        function handleSortChange(value) {
+            sortMode = value;
+            renderProducts();
         }
 
         function renderProducts() {
@@ -786,8 +858,8 @@
             galleryIndex = 0;
 
             document.getElementById('catalogContainer').style.display = 'none';
-            document.getElementById('cartBar').style.display = 'none';
             document.getElementById('productView').style.display = 'block';
+            updateCartUI();
             window.scrollTo(0, 0);
 
             document.getElementById('pdpTitle').textContent = product.title;
@@ -955,10 +1027,9 @@
             const cartBar = document.getElementById('cartBar');
             const cartCount = document.getElementById('cartCount');
             const cartTotal = document.getElementById('cartTotal');
-            const pdpOpen = document.getElementById('productView').style.display === 'block';
 
             if (cart.length > 0) {
-                cartBar.style.display = pdpOpen ? 'none' : 'flex';
+                cartBar.style.display = 'flex';
                 cartCount.innerText = cart.length;
                 const total = cart.reduce((sum, item) => sum + item.price, 0);
                 cartTotal.innerText = `${total} грн`;
