@@ -27,7 +27,7 @@ collections:
         widget: "datetime"
         default: "{{now}}"
         format: "YYYY-MM-DDTHH:mm:ssZ"
-        required: false
+        required: true
         hint: "Проставляється автоматично — не потрібно змінювати. Використовується для сортування «спочатку нові»."
 
       - label: "Стать"
