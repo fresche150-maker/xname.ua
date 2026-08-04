@@ -25,10 +25,11 @@ collections:
       - label: "Дата додавання"
         name: "createdAt"
         widget: "datetime"
-        default: "{{now}}"
         format: "YYYY-MM-DDTHH:mm:ssZ"
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
         required: true
-        hint: "Проставляється автоматично — не потрібно змінювати. Використовується для сортування «спочатку нові»."
+        hint: "Оберіть поточну дату та час"
 
       - label: "Стать"
         name: "gender"
