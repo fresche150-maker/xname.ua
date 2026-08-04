@@ -1,0 +1,17 @@
+{
+  "title": "тест3",
+  "sku": "",
+  "price": 1,
+  "gender": "women",
+  "subtype": "hoodie",
+  "isNew": true,
+  "isSale": false,
+  "images": [
+    "/images/products/IMG_2286.JPG"
+  ],
+  "sizes": [],
+  "description": "",
+  "composition": "",
+  "care": "",
+  "sizeChart": []
+}
