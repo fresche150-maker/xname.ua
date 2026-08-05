@@ -25,12 +25,9 @@ collections:
       - label: "Дата додавання"
         name: "createdAt"
         widget: "datetime"
-        default: "{{datetime}}"
-        format: "YYYY-MM-DDTHH:mm:ssZ"
-        date_format: "YYYY-MM-DD"
-        time_format: "HH:mm"
+        default: "{{now}}"
         required: false
-        hint: "Проставляється автоматично при створенні товару."
+        hint: "Проставляється автоматично при створенні товару. Не редагуйте вручну."
 
       - label: "Стать"
         name: "gender"
