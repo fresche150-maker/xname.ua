@@ -9,6 +9,16 @@ public_folder: "/images/products"
 locale: "uk"
 
 collections:
+  - name: "settings"
+    label: "Налаштування сайту"
+    files:
+      - name: "hero"
+        label: "Банер на головній"
+        file: "content/settings/hero.json"
+        fields:
+          - { label: "Зображення банера", name: "image", widget: "image", required: false }
+          - { label: "Заголовок", name: "title", widget: "string", default: "Нова колекція", required: false }
+          - { label: "Підзаголовок", name: "subtitle", widget: "string", default: "Оверсайз силуети для твого комфорту та стилю", required: false }
   - name: "products"
     label: "Товари"
     label_singular: "Товар"
