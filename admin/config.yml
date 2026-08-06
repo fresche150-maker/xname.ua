@@ -20,7 +20,7 @@ collections:
           - { label: "Заголовок", name: "title", widget: "string", default: "Нова колекція", required: false }
           - { label: "Підзаголовок", name: "subtitle", widget: "string", default: "Оверсайз силуети для твого комфорту та стилю", required: false }
           
-  - name: "products"
+ - name: "products"
     label: "Товари"
     label_singular: "Товар"
     folder: "content/products"
