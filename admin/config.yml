@@ -9,17 +9,7 @@ public_folder: "/images/products"
 locale: "uk"
 
 collections:
- - name: "settings"
-    label: "Налаштування сайту"
-    files:
-      - name: "hero"
-        label: "Банер на головній"
-        file: "content/settings/hero.json"
-        fields:
-          - { label: "Зображення банера", name: "image", widget: "image", required: false }
-          - { label: "Заголовок", name: "title", widget: "string", default: "Нова колекція", required: false }
-          - { label: "Підзаголовок", name: "subtitle", widget: "string", default: "Оверсайз силуети для твого комфорту та стилю", required: false }
- - name: "products"
+  - name: "products"
     label: "Товари"
     label_singular: "Товар"
     folder: "content/products"
@@ -28,16 +18,16 @@ collections:
     extension: "json"
     format: "json"
     fields:
-      - { label: "Назва", name: "title", widget: "string", required: false }
-      - { label: "Артикул (SKU)", name: "sku", widget: "string", required: false }
-      - { label: "Ціна (грн)", name: "price", widget: "number", value_type: "int", required: false }
-
       - label: "Дата додавання"
         name: "createdAt"
         widget: "datetime"
         default: "{{now}}"
         required: false
         hint: "Проставляється автоматично при створенні товару. Не редагуйте вручну."
+
+      - { label: "Назва", name: "title", widget: "string", required: false }
+      - { label: "Артикул (SKU)", name: "sku", widget: "string", required: false }
+      - { label: "Ціна (грн)", name: "price", widget: "number", value_type: "int", required: false }
 
       - label: "Стать"
         name: "gender"
@@ -92,3 +82,14 @@ collections:
           - { label: "Розмір", name: "size", widget: "string", required: false }
           - { label: "Обхват грудей (см)", name: "chest", widget: "string", required: false }
           - { label: "Довжина виробу (см)", name: "length", widget: "string", required: false }
+
+  - name: "settings"
+    label: "Налаштування сайту"
+    files:
+      - name: "hero"
+        label: "Банер на головній"
+        file: "content/settings/hero.json"
+        fields:
+          - { label: "Зображення банера", name: "image", widget: "image", required: false }
+          - { label: "Заголовок", name: "title", widget: "string", default: "Нова колекція", required: false }
+          - { label: "Підзаголовок", name: "subtitle", widget: "string", default: "Оверсайз силуети для твого комфорту та стилю", required: false }
