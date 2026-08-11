@@ -86,6 +86,12 @@ collections:
   - name: "settings"
     label: "Налаштування сайту"
     files:
+      - name: "promo"
+        label: "Верхня смужка"
+        file: "content/settings/promo.json"
+        fields:
+          - { label: "Текст смужки", name: "text", widget: "string", default: "Безкоштовна доставка від 2000 грн  |  Оплата при отриманні  |  Made in Ukraine", required: false, hint: "Можна використовувати «|» як роздільник" }
+
       - name: "hero"
         label: "Банер на головній"
         file: "content/settings/hero.json"
