@@ -681,7 +681,7 @@
 </head>
 <body>
 
-    <div class="promo-bar">Безкоштовна доставка від 2000 грн &nbsp;|&nbsp; Оплата при отриманні &nbsp;|&nbsp; Made in Ukraine</div>
+    <div class="promo-bar" id="promoBar">Безкоштовна доставка від 2000 грн &nbsp;|&nbsp; Оплата при отриманні &nbsp;|&nbsp; Made in Ukraine</div>
 
     <header>
         <div class="logo-lockup">
@@ -803,6 +803,8 @@
         let activeMain = 'all';
         let activeSub = null;
         let sortMode = 'new'; // 'new' | 'priceAsc' | 'priceDesc'
+        const PAGE_SIZE = 16;
+        let currentPage = 1;
 
         const SUBTYPE_LABELS = {
             hoodie: 'Худі',
@@ -872,6 +874,7 @@
 
         function handleSortChange(value) {
             sortMode = value;
+            currentPage = 1;
             renderProducts();
         }
 
@@ -881,20 +884,84 @@
 
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="cart-empty" style="grid-column: 1 / -1;">Товарів у цьому розділі поки немає</div>';
+                renderPagination(0);
                 return;
             }
 
-            container.innerHTML = filtered.map(product => `
+            const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+            container.innerHTML = pageItems.map(product => {
+                const images = product.images || [];
+                const nav = images.length > 1 ? `
+                        <button type="button" class="img-nav img-nav-prev" onclick="changeCardImage(event, '${product.id}', -1)">‹</button>
+                        <button type="button" class="img-nav img-nav-next" onclick="changeCardImage(event, '${product.id}', 1)">›</button>
+                        <div class="img-dots">${images.map((_, i) => `<span class="img-dot${i === 0 ? ' active' : ''}"></span>`).join('')}</div>
+                    ` : '';
+                return `
                 <div class="product-card" onclick="openProduct('${product.id}')">
-                    <div class="product-img-wrap">
-                        <img src="${product.images[0]}" class="product-img" alt="${product.title}">
+                    <div class="product-img-wrap" id="imgwrap-${product.id}" data-index="0">
+                        <img src="${images[0] || ''}" class="product-img" alt="${product.title}">
+                        ${nav}
                     </div>
                     <div class="product-info">
                         <div class="product-title">${product.title}</div>
                         <div class="product-price">${product.price} грн</div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
+
+            renderPagination(totalPages);
+        }
+
+        // Перемикання фото прямо в плитці каталогу, без переходу в картку товару
+        function changeCardImage(e, id, dir) {
+            e.stopPropagation();
+            const product = products.find(p => p.id === id);
+            if (!product || !product.images || product.images.length < 2) return;
+
+            const wrap = document.getElementById('imgwrap-' + id);
+            if (!wrap) return;
+
+            let idx = parseInt(wrap.dataset.index, 10) || 0;
+            idx = (idx + dir + product.images.length) % product.images.length;
+            wrap.dataset.index = idx;
+
+            const img = wrap.querySelector('.product-img');
+            if (img) img.src = product.images[idx];
+
+            wrap.querySelectorAll('.img-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === idx);
+            });
+        }
+
+        function renderPagination(totalPages) {
+            const el = document.getElementById('pagination');
+            if (!el) return;
+
+            if (totalPages <= 1) {
+                el.innerHTML = '';
+                return;
+            }
+
+            let html = `<button type="button" class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">‹</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button type="button" class="page-btn${i === currentPage ? ' active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            html += `<button type="button" class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">›</button>`;
+
+            el.innerHTML = html;
+        }
+
+        function goToPage(n) {
+            currentPage = n;
+            renderProducts();
+            document.getElementById('catalogContainer').scrollIntoView({ behavior: 'smooth' });
         }
 
         function renderSubcategories() {
@@ -918,6 +985,7 @@
         function selectMain(btn, cat) {
             activeMain = cat;
             activeSub = null;
+            currentPage = 1;
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderSubcategories();
@@ -941,6 +1009,7 @@
             if (!btn) return;
             const key = btn.dataset.sub;
             activeSub = activeSub === key ? null : key;
+            currentPage = 1;
             renderSubcategories();
             renderProducts();
         });
@@ -1261,9 +1330,28 @@
             }
         }
 
+        // Підвантажуємо текст верхньої смужки з content/settings/promo.json
+        // (окремий файл в CMS -> "Налаштування сайту" -> "Верхня смужка").
+        async function loadPromoSettings() {
+            try {
+                const res = await fetch(
+                    'https://api.github.com/repos/fresche150-maker/xname.ua/contents/content/settings/promo.json'
+                );
+                if (!res.ok) return; // файл ще не створено — лишаємо текст за замовчуванням
+                const meta = await res.json();
+                const fileRes = await fetch(meta.download_url);
+                const data = await fileRes.json();
+
+                if (data.text) document.getElementById('promoBar').innerHTML = data.text;
+            } catch (err) {
+                console.error('Не вдалося завантажити текст верхньої смужки:', err);
+            }
+        }
+
         // Запускаем загрузку
         loadProducts();
         loadHeroSettings();
+        loadPromoSettings();
     </script>
 </body>
 </html>
