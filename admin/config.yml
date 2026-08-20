@@ -99,3 +99,15 @@ collections:
           - { label: "Зображення банера", name: "image", widget: "image", required: false }
           - { label: "Заголовок", name: "title", widget: "string", default: "Нова колекція", required: false }
           - { label: "Підзаголовок", name: "subtitle", widget: "string", default: "Оверсайз силуети для твого комфорту та стилю", required: false }
+
+      - name: "telegram"
+        label: "Telegram-бот замовлень"
+        file: "content/settings/telegram.json"
+        fields:
+          - { label: "Telegram ID адміна (кому приходять замовлення)", name: "adminChatId", widget: "string", required: false, hint: "Числовий ID, дізнатись можна через бота @userinfobot" }
+          - { label: "Привітання (головне меню)", name: "welcomeText", widget: "text", required: false }
+          - { label: "Умови замовлення та терміни виготовлення", name: "termsText", widget: "text", required: false }
+          - { label: "Яка якість та склад", name: "qualityText", widget: "text", required: false }
+          - { label: "Умови повернення", name: "returnText", widget: "text", required: false }
+          - { label: "Що робити якщо розмір не підходить", name: "sizeText", widget: "text", required: false }
+          - { label: "Реквізити для оплати", name: "paymentText", widget: "text", required: false }
