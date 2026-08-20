@@ -804,6 +804,12 @@
         let activeSub = null;
         let sortMode = 'new'; // 'new' | 'priceAsc' | 'priceDesc'
         const PAGE_SIZE = 16;
+
+        // Налаштування Telegram-бота для оформлення замовлень.
+        // TELEGRAM_BOT_USERNAME — юзернейм вашого бота (без @), напр. 'xname_shop_bot'
+        // WORKER_URL — адреса вашого Cloudflare Worker, напр. 'https://xname-bot.ВАШ-АККАУНТ.workers.dev'
+        const TELEGRAM_BOT_USERNAME = 'xname_shop_bot';
+        const WORKER_URL = 'https://xname-bot.xnameshop.workers.dev';
         let currentPage = 1;
 
         const SUBTYPE_LABELS = {
@@ -1232,7 +1238,7 @@
             document.getElementById('cartModal').style.display = 'none';
         }
 
-        function submitOrder(e) {
+        async function submitOrder(e) {
             e.preventDefault();
             if (cart.length === 0) return;
 
@@ -1246,13 +1252,33 @@
                 total: cart.reduce((sum, item) => sum + item.price, 0)
             };
 
-            // TODO: замінити на реальну відправку (Telegram-бот / API / email)
-            console.log('Нове замовлення:', orderData);
+            const submitBtn = e.target.querySelector('[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Зачекайте...';
+            }
 
-            alert("Дякуємо за замовлення! Менеджер зв'яжеться з вами найближчим часом.");
-            cart = [];
-            updateCartUI();
-            closeCartModal();
+            try {
+                const res = await fetch(WORKER_URL + '/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                const data = await res.json();
+
+                cart = [];
+                updateCartUI();
+                closeCartModal();
+
+                window.location.href = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${data.id}`;
+            } catch (err) {
+                console.error('Не вдалося створити замовлення:', err);
+                alert('Щось пішло не так. Спробуйте ще раз або напишіть нам напряму.');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Підтвердити замовлення';
+                }
+            }
         }
         let products = [];
 
